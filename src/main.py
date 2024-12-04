@@ -1,40 +1,19 @@
-# src/main.py
-from PySide6.QtWidgets import QApplication, QWidget
-from PySide6.QtUiTools import QUiLoader
-from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QApplication, QMainWindow
 import rename_modules as rename
 import os
+from ui_main_window import Ui_mainWindow
 
-uiLoader = QUiLoader()
-
-class Tools:
+class Tools(QMainWindow):
     def __init__(self):
+        super().__init__()  # 初始化父类
         # 加载界面
-        self.ui = uiLoader.load('src/main_window.ui')
-        self.ui.setAcceptDrops(True)  # 启用拖放
-
+        self.ui = Ui_mainWindow()
+        self.ui.setupUi(self)
         # 绑定信号
         rename.signal.progress.connect(self.ui.statusbar.showMessage)
         # 绑定按钮
         self.ui.video_rename_button.clicked.connect(self.rename_series)
         self.ui.anime_rename_button.clicked.connect(self.rename_animes)
-
-    def dragEnterEvent(self, event):
-        # 接受拖入事件
-        if event.mimeData().hasUrls():
-            event.acceptProposedAction()
-        else:
-            event.ignore()
-
-    def dropEvent(self, event):
-        # 处理拖放事件，获取文件夹路径并更新到输入框
-        for url in event.mimeData().urls():
-            file_path = url.toLocalFile()
-            if os.path.isdir(file_path):
-                self.ui.rename_folder_path.setText(file_path)
-                self.ui.statusbar.showMessage(f"已选择文件夹: {file_path}")
-                break
-        event.acceptProposedAction()
 
     def rename_series(self):
         path = self.ui.rename_folder_path.text()
@@ -54,6 +33,6 @@ class Tools:
             self.ui.statusbar.showMessage("请先选择文件夹路径")
 
 app = QApplication([])
-tools = Tools()
-tools.ui.show()
+window = Tools()
+window.show()
 app.exec()
