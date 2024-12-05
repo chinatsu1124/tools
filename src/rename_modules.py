@@ -1,12 +1,9 @@
 import shutil, os, re
-from PySide6.QtCore import QObject, Signal
+from signals import StatusSignal
 
 ANIME_PATTERN = r'\[.*?\]\[.*?\](.*)\.chs\.mp4'
 
-class RenameSignal(QObject):
-    progress = Signal(str)     # 用于发送状态信息的信号
-
-signal = RenameSignal()
+signal = StatusSignal()
 
 # 添加路径验证
 def rename_animes(path):
@@ -36,13 +33,13 @@ def rename_animes(path):
     signal.progress.emit(f'共重命名了{file_num}个视频')
     return file_num
 
-def rename_series(path, series_name, season, year):
+def rename_series(path, series_name, season, year, re_str):
     file_num = 0
     for file_name in os.listdir(path):
         video_path = os.path.join(path, file_name)
         if is_valid_video_file(video_path):
             try:
-                episode = re.search(r'E(\d{2})', file_name, re.IGNORECASE).group(1)
+                episode = re.search(re_str, file_name, re.IGNORECASE).group(1)
                 video_season_path = os.path.join(path, f'{series_name} ({year})', f'Season {season}')
                 if not os.path.exists(video_season_path):
                     os.makedirs(video_season_path)
