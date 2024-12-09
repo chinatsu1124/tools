@@ -125,7 +125,7 @@ class Ui_mainWindow(object):
         self.aria2_keyword = QLineEdit(self.aria2_tab)
         self.aria2_tab_layout.addWidget(self.aria2_keyword)
         # 添加aria2按钮
-        self.aria2_button = QPushButton("Aria2")
+        self.aria2_button = QPushButton("Aria2批量删除")
         self.aria2_tab_layout.addWidget(self.aria2_button)
         # 将tabWidget添加到水平布局
         self.horizontalLayout.addWidget(self.tabWidget)
